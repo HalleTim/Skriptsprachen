@@ -3,6 +3,9 @@ import config
 import microInput
 from math import *
 from wave2RGB import *
+import threading
+import time
+import queue
 
 global thefreq
 
@@ -11,15 +14,14 @@ def freqToRGB(input):
     which = input[1:].argmax() + 1
     #umwandeln des Index in Frequenz
     thefreq = which*config.RATE/config.chunk
-    print(which)
 
     #anpassen der festgestellten Wertes für schönere Farben :=)
     while thefreq < 350 and thefreq > 15:
             thefreq = thefreq*2
-            print ("the new freq is "+str(thefreq) )
+            #print ("the new freq is "+str(thefreq) )
     while thefreq > 700:
         thefreq = thefreq/2
-        print ("the new freq is"+str(thefreq))
+        #print ("the new freq is"+str(thefreq))
     
     #Berechnung zur Umwandlung der Frequenz in sichtbare Farbe
     c = 3*10**8
@@ -30,16 +32,39 @@ def freqToRGB(input):
 
     return rgb
 
-
-def __main___():
+def recordAudio():
     recorder=microInput.Recorder()
+    
+    while(True):
+        Rinput=recorder.recordAudio()
+        Rinput=abs(np.fft.rfft(Rinput))**2
+        globals()[config.effect](Rinput)
+
+        if(not q.empty()):
+            status=q.get()
+            recorder.stop()
+            print("Beende")
+            q.task_done()
+            break
+
+def main():
+    recordThread= threading.Thread(target=recordAudio)
 
     while(True):
-        input=recorder.recordAudio()
-
-        input=abs(np.fft.rfft(input))**2
-
+        test="y"
+        if(test=="y" and not recordThread.is_alive()):
+            recordThread.start()
+        elif(test=="n"):
+            q.put(True)
+        else:
+            time.sleep(5)
+            q.put(True)
+            q.join()
+            recordThread= threading.Thread(target=recordAudio)
         #Aufruf des in der config gespeicherten Effekts
-        locals()[config.effect](input)
+
+q=queue.Queue()
+main()
+        
 
     

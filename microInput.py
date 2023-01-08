@@ -32,3 +32,6 @@ class Recorder:
                 print("Max errors ocurred while recording")
                 exit()
         return y
+    
+    def stop(self):
+        self.stream.close()
