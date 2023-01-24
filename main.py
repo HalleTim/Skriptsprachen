@@ -6,6 +6,9 @@ from wave2RGB import *
 import threading
 import time
 import queue
+from soco import SoCo
+from soco.discovery import by_name
+from TVStateEnum import TVState
 
 global thefreq
 
@@ -32,13 +35,14 @@ def freqToRGB(input):
 
     return rgb
 
+#Aufnahme des Audios
 def recordAudio():
     recorder=microInput.Recorder()
     
     while(True):
         Rinput=recorder.recordAudio()
         Rinput=abs(np.fft.rfft(Rinput))**2
-        globals()[config.effect](Rinput)
+        print(globals()[config.effect](Rinput))
 
         if(not q.empty()):
             status=q.get()
@@ -47,21 +51,44 @@ def recordAudio():
             q.task_done()
             break
 
+
+playState=TVState.music
+
+def updateCurrentState(SonosAnlage):
+    currentTrack=SonosAnlage.get_current_track_info()['title']
+    state=SonosAnlage.get_current_transport_info()['current_transport_state']
+
+    if(state=="PLAYING" and not currentTrack==""):
+        return TVState.music
+    elif (state=="PLAYING"):
+        return TVState.TV
+    else:
+        return TVState.pause
+
+
+
 def main():
     recordThread= threading.Thread(target=recordAudio)
+    SonosAnlage = by_name("Wohnzimmer")
+    threadState=False
 
     while(True):
-        test="y"
-        if(test=="y" and not recordThread.is_alive()):
+        threadState=recordThread.is_alive()
+        playState=updateCurrentState(SonosAnlage)
+
+        if(not playState==TVState.pause and not threadState):
             recordThread.start()
-        elif(test=="n"):
-            q.put(True)
-        else:
-            time.sleep(5)
+
+        elif(threadState and playState==TVState.pause):
             q.put(True)
             q.join()
             recordThread= threading.Thread(target=recordAudio)
-        #Aufruf des in der config gespeicherten Effekts
+            
+        else:
+            time.sleep(5)
+            
+
+
 
 q=queue.Queue()
 main()
