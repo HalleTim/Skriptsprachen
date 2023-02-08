@@ -48,7 +48,7 @@ def recordAudio():
         Rinput=recorder.recordAudio()
         Rinput=abs(np.fft.rfft(Rinput))**2
         color=globals()[config.effect](Rinput)
-        print(color)
+#        print(color)
         ledStrip1.movingColor(color)
 
 
@@ -93,7 +93,7 @@ def main():
             recordThread= threading.Thread(target=recordAudio)
             
         else:
-            time.sleep(5)
+            time.sleep(60)
             
 
 
