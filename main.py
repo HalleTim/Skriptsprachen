@@ -9,8 +9,12 @@ import queue
 from soco import SoCo
 from soco.discovery import by_name
 from TVStateEnum import TVState
+import led
 
 global thefreq
+playState=TVState.music
+q=queue.Queue()
+
 
 def freqToRGB(input):
     #Frequenz mit größten Anteil finden
@@ -38,11 +42,15 @@ def freqToRGB(input):
 #Aufnahme des Audios
 def recordAudio():
     recorder=microInput.Recorder()
-    
+    ledStrip1=led.ledStrip()
+
     while(True):
         Rinput=recorder.recordAudio()
         Rinput=abs(np.fft.rfft(Rinput))**2
-        print(globals()[config.effect](Rinput))
+        color=globals()[config.effect](Rinput)
+        print(color)
+        ledStrip1.movingColor(color)
+
 
         if(not q.empty()):
             status=q.get()
@@ -52,7 +60,7 @@ def recordAudio():
             break
 
 
-playState=TVState.music
+
 
 def updateCurrentState(SonosAnlage):
     currentTrack=SonosAnlage.get_current_track_info()['title']
@@ -71,7 +79,7 @@ def main():
     recordThread= threading.Thread(target=recordAudio)
     SonosAnlage = by_name("Wohnzimmer")
     threadState=False
-
+    
     while(True):
         threadState=recordThread.is_alive()
         playState=updateCurrentState(SonosAnlage)
@@ -90,7 +98,7 @@ def main():
 
 
 
-q=queue.Queue()
+
 main()
         
 
