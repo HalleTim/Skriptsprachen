@@ -14,7 +14,7 @@ class ledStrip:
         self.LEDs=neopixel.NeoPixel(self.pin,self.ledCount,brightness=self.brightness)
     
     def movingColor(self, rgb):
-        for i in range(self.ledCount-1,0,-3):
+        for i in range(self.ledCount-1,-1,-3):
             if i > 5: 
                 self.LEDs[i]=self.LEDs[i-3]
                 self.LEDs[i-1]=self.LEDs[i-4]
