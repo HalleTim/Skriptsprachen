@@ -1,0 +1,86 @@
+\chapter{Einleitung}
+
+Die vorliegende Ausarbeitung beschreibt den Aufbau, die Funktion sowie technische Hintergründe des "Audio reactive LED Strips".
+Der vollständige Source Code ist im verlinkten Git Hub Repository zu finden.
+
+\section{Hardware und Funktion der Anwendung}
+Für die Anwendung werden ein Raspberry Pi, ein LED-Streifen sowie ein Mikrofon mit Soundkarte und eine Sonos Musikanalage benötigt.
+Auf dem Raspberry Pi wurde als Betriebssystem RaspberryOS installiert und der in Python geschriebenen Source Code wird ebenfalls hier
+ausgeführt. Die Netzwerkanbindung erfolgt via WLAN.
+Um die LEDs des LED-Streifens anzusteuern wird ein Kabel an einen GPIO Pin des Raspberry PIs angeschlossen. Die Stromversorgung erfolgt über ein seperates Netzteil um
+bei längeren Betrieb den Raspberry Pi nicht zu überlasten. Zusätzlich wird via USB eine Soundkarte an den Pi angeschlossen, welche das eingehenden AudioSignal an den Pi weiterleitet.
+\\
+Die Funktionalität der Anwendung lässt sich in zwei Modi unterteilen. Der erste Modi dient dazu, visuelle Effekte zu brechnen und auf den
+LED-Streifen darzustellen, sobald auf der Sonos Anlage Musik abgespielt wird. Die berechneten Effekte sind Abhängig von den vom Mikrofon 
+erfassten Musik. Der zweite Modi ist aktiv sobald über den Fernseher Filme oder Serien geschaut werden und der Ton dieser über die bereits
+erwähnte Sonos Anlage wiedergegeben wird. In diesem Modi soll der LED-Streifen konstant in einer Farbe leuchten. 
+Wird weder ferngesehen noch Musik gehört soll der LED-Streifen abgeschaltet werden und beim nächsten starten einer Wiedergabe
+erneut eingschaltet werden.
+
+
+
+
+\subsection{Überschrift Ebene drei}
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+Eine Aufzählung:
+
+\begin{itemize}
+\item Lorem ipsum
+\item dolor sit amet
+\item consetetur sadipscing elitr
+\item sed diam nonumy
+\end{itemize}
+
+Eine nummerierte Aufzählung:
+
+\begin{enumerate}
+\item Erster Punkt
+\item Zweiter Punkt
+\item Dritter Punkt
+\end{enumerate}
+
+Es folgt Tabelle \ref{beispieltabelle}.
+
+\begin{table}[hb!]
+\centering
+\begin{tabular}{lrc}
+\toprule
+Linksbündig & Rechtsbündig & Zentriert \\
+\midrule
+Abc &  13 & Mno \\ \addlinespace
+Def & 104 & Pqr \\ \addlinespace
+Ghi &   7 & Stu \\ \addlinespace
+Jkl &  -5 & Vwx \\
+\bottomrule
+\end{tabular}
+\caption{Beschreibung der Tabelle.}
+\label{beispieltabelle}
+\end{table}
+
+Es folgt Programmlisting \ref{beispiellisting}.
+
+\begin{lstlisting}[caption={Beschreibung des Listings.}, label=beispiellisting]
+#include <stdio.h>
+
+int main(void)
+{
+    printf("Hello, world\n");
+}
+\end{lstlisting}
+
+Ein Listing ohne Titel, welches nicht im Listingverzeichnis aufgefühert wird:
+
+\begin{lstlisting}[numbers=none]
+#include <stdio.h>
+
+int main(void)
+{
+    printf("Good bye!\n");
+}
+\end{lstlisting}
+
+Programmcode im Fließtext: \lstinline{int summe(int a, int b)}
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
