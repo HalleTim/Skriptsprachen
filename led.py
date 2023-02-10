@@ -25,3 +25,6 @@ class ledStrip:
                 self.LEDs[i-2]=rgb
 
         self.LEDs.write()
+
+    def fillColor(self,rgb):
+        self.LEDs.fill(rgb)

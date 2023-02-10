@@ -14,7 +14,7 @@ import led
 global thefreq
 playState=TVState.music
 q=queue.Queue()
-
+global recordThread
 
 def freqToRGB(input):
     #Frequenz mit größten Anteil finden
@@ -72,31 +72,32 @@ def updateCurrentState(SonosAnlage):
         return TVState.TV
     else:
         return TVState.pause
+    
 
-
+def endThread():
+    q.put(True)
+    q.join()
+    globals()['recordThread']= threading.Thread(target=recordAudio)
 
 def main():
-    recordThread= threading.Thread(target=recordAudio)
+    globals()['recordThread']= threading.Thread(target=recordAudio)
     SonosAnlage = by_name("Wohnzimmer")
     threadState=False
     
     while(True):
-        threadState=recordThread.is_alive()
+        threadState=globals()['recordThread'].is_alive()
         playState=updateCurrentState(SonosAnlage)
 
-        if(not playState==TVState.pause and not threadState):
-            recordThread.start()
-
+        if(playState==TVState.music and not threadState):
+            globals()['recordThread'].start()
+        elif(playState==TVState.TV ):
+            ledStrip1=led.ledStrip()
+            ledStrip1.fillColor(config.tvColor)
+            endThread()
         elif(threadState and playState==TVState.pause):
-            q.put(True)
-            q.join()
-            recordThread= threading.Thread(target=recordAudio)
-            
+            endThread()      
         else:
             time.sleep(60)
-            
-
-
 
 
 main()

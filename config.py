@@ -7,3 +7,4 @@ effect="freqToRGB"
 rpiPin=board.D18
 ledCount=150
 brightness=1
+tvColor=(0,240,0)
