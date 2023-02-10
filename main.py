@@ -90,14 +90,15 @@ def main():
 
         if(playState==TVState.music and not threadState):
             globals()['recordThread'].start()
-        elif(playState==TVState.TV ):
+        elif(playState==TVState.TV):
+            if threadState:
+                endThread()
             ledStrip1=led.ledStrip()
             ledStrip1.fillColor(config.tvColor)
-            endThread()
         elif(threadState and playState==TVState.pause):
             endThread()      
         else:
-            time.sleep(60)
+            time.sleep(5)
 
 
 main()
