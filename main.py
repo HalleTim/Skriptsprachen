@@ -15,6 +15,7 @@ global thefreq
 playState=TVState.music
 q=queue.Queue()
 global recordThread
+global ledStrip1
 
 def freqToRGB(input):
     #Frequenz mit größten Anteil finden
@@ -42,14 +43,14 @@ def freqToRGB(input):
 #Aufnahme des Audios
 def recordAudio():
     recorder=microInput.Recorder()
-    ledStrip1=led.ledStrip()
+
 
     while(True):
         Rinput=recorder.recordAudio()
         Rinput=abs(np.fft.rfft(Rinput))**2
         color=globals()[config.effect](Rinput)
 #        print(color)
-        ledStrip1.movingColor(color)
+        globals()['ledStrip1'].movingColor(color)
 
 
         if(not q.empty()):
@@ -81,6 +82,7 @@ def endThread():
 
 def main():
     globals()['recordThread']= threading.Thread(target=recordAudio)
+    globals()['ledStrip1']=led.ledStrip()
     SonosAnlage = by_name("Wohnzimmer")
     threadState=False
     
@@ -89,12 +91,15 @@ def main():
         playState=updateCurrentState(SonosAnlage)
 
         if(playState==TVState.music and not threadState):
+            globals()['ledStrip1'].ledTVState=False
             globals()['recordThread'].start()
-        elif(playState==TVState.TV):
+
+        elif(playState==TVState.TV and globals()['ledStrip1'].ledTVState==False):
             if threadState:
                 endThread()
-            ledStrip1=led.ledStrip()
-            ledStrip1.fillColor(config.tvColor)
+            globals()['ledStrip1']=led.ledStrip()
+            globals()['ledStrip1'].fillColor(config.tvColor)
+            globals()['ledStrip1'].ledTVState=True
         elif(threadState and playState==TVState.pause):
             endThread()      
         else:

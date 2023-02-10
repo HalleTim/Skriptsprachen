@@ -6,12 +6,13 @@ class ledStrip:
     global ledCount
     global brightness
     global LEDs
-
+    global ledTVState
     def __init__(self) -> None:
         self.pin=config.rpiPin
         self.ledCount=config.ledCount
         self.brightness=config.brightness
         self.LEDs=neopixel.NeoPixel(self.pin,self.ledCount,brightness=self.brightness)
+        self.ledTVState=False
     
     def movingColor(self, rgb):
         for i in range(self.ledCount-1,-1,-3):
@@ -28,3 +29,4 @@ class ledStrip:
 
     def fillColor(self,rgb):
         self.LEDs.fill(rgb)
+        self.ledTVState=True
