@@ -97,10 +97,10 @@ def main():
         elif(playState==TVState.TV and globals()['ledStrip1'].ledTVState==False):
             if threadState:
                 endThread()
-            globals()['ledStrip1']=led.ledStrip()
             globals()['ledStrip1'].fillColor(config.tvColor)
             globals()['ledStrip1'].ledTVState=True
         elif(threadState and playState==TVState.pause):
+            globals()['ledStrip1'].fillColor((0,0,0))
             endThread()      
         else:
             time.sleep(5)

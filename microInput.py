@@ -12,7 +12,7 @@ class Recorder:
         p = pyaudio.PyAudio()
         self.stream = p.open(format=pyaudio.paInt16,
                     channels=1,
-                    rate=44100,
+                    rate=config.RATE,
                     input=True,
                     frames_per_buffer=config.frames_per_buffer)
         self.errorCounter=0

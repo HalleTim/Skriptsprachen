@@ -1,9 +1,30 @@
-\babel@toc {ngerman}{}\relax 
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {ngerman}{}
+\defcounter {refsection}{0}\relax 
 \contentsline {chapter}{Zusammenfassung}{iii}{}%
+\defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {1}Einleitung}{1}{}%
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.1}Hardware und Funktion der Anwendung}{1}{}%
-\contentsline {subsection}{\numberline {1.1.1}Überschrift Ebene drei}{1}{}%
-\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{3}{}%
-\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{5}{}%
-\contentsline {chapter}{\nonumberline Listingverzeichnis}{7}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.2}Verwendete Technologien}{1}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.3}Struktur der Anwendung}{2}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}Programmablauf}{3}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Abfrage der Sonos Anlage}{3}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}Musikmodus}{3}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.1}Musik Modus starten und beenden}{3}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.2}Audio aufnahme und Farben berechnen}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{5}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{7}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nonumberline Listingverzeichnis}{9}{}%
+\defcounter {refsection}{0}\relax 
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

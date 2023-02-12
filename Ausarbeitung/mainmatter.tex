@@ -1,86 +1,90 @@
 \chapter{Einleitung}
 
 Die vorliegende Ausarbeitung beschreibt den Aufbau, die Funktion sowie technische Hintergründe des "Audio reactive LED Strips".
-Der vollständige Source Code ist im verlinkten Git Hub Repository zu finden.
+Der vollständige Sourcecode ist im verlinkten GitHub Repository zu finden.
 
 \section{Hardware und Funktion der Anwendung}
-Für die Anwendung werden ein Raspberry Pi, ein LED-Streifen sowie ein Mikrofon mit Soundkarte und eine Sonos Musikanalage benötigt.
-Auf dem Raspberry Pi wurde als Betriebssystem RaspberryOS installiert und der in Python geschriebenen Source Code wird ebenfalls hier
-ausgeführt. Die Netzwerkanbindung erfolgt via WLAN.
+Für die Anwendung werden ein Raspberry Pi, ein LED-Streifen sowie ein Mikrofon mit Soundkarte und eine Sonos Musikanlage benötigt.
+Auf dem Raspberry Pi wurde als Betriebssystem RaspberryOS installiert. Der in Python geschriebenen Sourcecode wird ebenfalls auf dem 
+Raspberry ausgeführt. Die Netzwerkanbindung erfolgte via WLAN.
 Um die LEDs des LED-Streifens anzusteuern wird ein Kabel an einen GPIO Pin des Raspberry PIs angeschlossen. Die Stromversorgung erfolgt über ein seperates Netzteil um
-bei längeren Betrieb den Raspberry Pi nicht zu überlasten. Zusätzlich wird via USB eine Soundkarte an den Pi angeschlossen, welche das eingehenden AudioSignal an den Pi weiterleitet.
+bei längeren Betrieb den Raspberry Pi nicht zu überlasten. Zusätzlich wird via USB eine Soundkarte an den Pi angeschlossen, welche das eingehenden Audio Signal an den Pi weiterleitet.
 \\
-Die Funktionalität der Anwendung lässt sich in zwei Modi unterteilen. Der erste Modi dient dazu, visuelle Effekte zu brechnen und auf den
-LED-Streifen darzustellen, sobald auf der Sonos Anlage Musik abgespielt wird. Die berechneten Effekte sind Abhängig von den vom Mikrofon 
+Die Funktionalität der Anwendung lässt sich in zwei Modi unterteilen. Der erste Modus dient dazu, visuelle Effekte zu berechnen und auf den
+LED-Streifen darzustellen während auf der Sonos Anlage Musik abgespielt wird. Die berechneten Effekte sind Abhängig von den vom Mikrofon 
 erfassten Musik. Der zweite Modi ist aktiv sobald über den Fernseher Filme oder Serien geschaut werden und der Ton dieser über die bereits
 erwähnte Sonos Anlage wiedergegeben wird. In diesem Modi soll der LED-Streifen konstant in einer Farbe leuchten. 
-Wird weder ferngesehen noch Musik gehört soll der LED-Streifen abgeschaltet werden und beim nächsten starten einer Wiedergabe
-erneut eingschaltet werden.
+Wird weder ferngesehen noch Musik gehört wird der LED-Streifen abgeschaltet. Die Umschaltung zwischen den zwei Darstellungsmodi sowie das einschalten des LED-Streifens
+erfolgt automatisch durch Abfrage von Parametern der Sonos Anlage.  
 
+\section{Verwendete Technologien}
+Die Anwendung wurde in der Skriptsprache Python in der Verson 3.9.7 erstellt. Eine Ausführung ist jedoch auch mit niedrigeren Versionsnummern bis Version 3.6 möglich.
+Für die Ausführung werden verschiedene Standardmäßig nicht installierte Pakete benötigt. Als relevanteste Abhängigkeiten sind hier pyaudio, Sonos Controller (kurz SOCO) und neopixel zu erwähnen.
+Pyaudio stellt verschiedene Funktionen zur Aufnahme, Verarbeitung und Speicherung von Audiosignalen zur Verfügung. Innerhalb dieser Anwendung wird es verwendet um 
+die im Raum gespielte Musik aufzunehmen. Die SOCO Bibliothek ermöglicht Lautsprecher der Marke Sonos zu kontrollieren und deren Zustand (bspw. aktuell gespieltes Lied) 
+auszulesen. Hierbei ist zu erwähnen das SOCO keine vollständige Implementierung für die Wiedergabe von TV-Inhalten implementiert. Wie mit dieser Einschränkung umgegangen wurde,
+wird im Kapitel Realisierung erläutert.Die Bibliothek neopixel dient zur Ansteuerung der
+LEDs. Sie bietet zum einen Funktionen um den Streifen in einer Farbe leuchten zu lassen, kann aber auch einzelne LEDs ansteuern.
 
-
-
-\subsection{Überschrift Ebene drei}
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-Eine Aufzählung:
+\section{Struktur der Anwendung}
+Um für dritte und spätere eventuelle Weiterentwicklungen die Übersichtlichkeit zu erleichtern wurde der Quellcode auf verschiedene Python Dateien aufgeteilt. 
+Folgende Dateien sind Bestandteil der Anwendung:
 
 \begin{itemize}
-\item Lorem ipsum
-\item dolor sit amet
-\item consetetur sadipscing elitr
-\item sed diam nonumy
+\item config.py - Konfigurationsdatei
+\item led.py - LED-Funktionen
+\item microInput.py - Aufnahme von Audiosignalen
+\item TVStateEnum.py - Enumeration für Status der Sonos Anlage
+\item wave2RGB.py - Funktionen zur Farbberechnung
+\item main.py - Hauptdatei zur Ausführung
 \end{itemize}
 
-Eine nummerierte Aufzählung:
+Die Ausführung der Anwendung erfolgt mithilfe der main Datei. Diese ruft einzelne Funktionen und Klassen der anderen Dateien auf und beinhaltet auch die Funktionalität der
+Farbberechnung zu AudioSignalen. In der main Datei und auch in allen anderen Dateien werden wesentliche Konfigurationsparameter aus der zentralen Konfigurationsdatei bezogen.
+Dies erleichtetert Entwicklern und Anwendern Änderungen vorzunehmen und zu konsistent zu testen. Im  folgenden soll der Ablauf der Ausführung und die technischen Hintergründe
+erläuter werden.
 
-\begin{enumerate}
-\item Erster Punkt
-\item Zweiter Punkt
-\item Dritter Punkt
-\end{enumerate}
+\chapter{Programmablauf}
+\section{Abfrage der Sonos Anlage}
+Die Ausführung beginnt in der main Methode innerhalb der gleichnamigen Datei. Hier werden einige notwendige globale Variablen initialisiert und alle wesentlichen Methoden
+aufgerufen. Das zentrale Element der Methode ist eine endlose Schleife. Innerhalb dieser Schleife wird in jedem Durchlauf der akutelle Zustand der Sonos Analge erfasst 
+und ausgewertet um zu ermitteln welcher Modus im Moment gewünscht ist. Der Zustand wird in Form einer Variable des Typs TVStateEnum gespeichert. 
+Diese beinhaltet Zustände für die Wiedergabe von Musik und TV-Audio sowie einen Pause Zustand. Diese Zustände werden im weiteren Programmablauf verwendet um festzustellen
+welcher Modus aktuell ausgeführt werden soll. Wie genau der Modus wechsel erfolgt, wird in den folgenden Kapitel beschrieben.
 
-Es folgt Tabelle \ref{beispieltabelle}.
+Die Abfrage der Sonos Anlage erfolgt über einen Aufruf der updateCurrentState Funktion. Diese fragt mithilfe der SOCO Bibliothek den Wiedergabestatus und
+das akutell gespielte Lied ab. Durch diese Abfrage kann ermittle welcher Zustand der TVStateEnum zurückgegeben werden muss. 
+Ein Sonderfall ist die Wiedergabe von Audioinhalten eines Fernsehers. Wie bereits in der Einleitung erwähnt implementiert SOCO diesen Fall nicht vollständig.
+Wird ein solches Audiosignal wiedergeben wird keine Information über den akutell wiedergegeben Titel zurückgegeben, jedoch erkannt das Anlage aktuell Ton abspielt. 
+Aus diesem Grund ist die Abfrage für in der zweiten Fallunterscheidung wie in der Abbildung 2.1 zu sehen entsprechend angepasst.
 
-\begin{table}[hb!]
-\centering
-\begin{tabular}{lrc}
-\toprule
-Linksbündig & Rechtsbündig & Zentriert \\
-\midrule
-Abc &  13 & Mno \\ \addlinespace
-Def & 104 & Pqr \\ \addlinespace
-Ghi &   7 & Stu \\ \addlinespace
-Jkl &  -5 & Vwx \\
-\bottomrule
-\end{tabular}
-\caption{Beschreibung der Tabelle.}
-\label{beispieltabelle}
-\end{table}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.5]{UpdateCurrentState.png}
+    \caption{Abfrage Sonos Anlage}
+    \label{UpdateCurrentState}
+\end{figure}
 
-Es folgt Programmlisting \ref{beispiellisting}.
+\section{Musikmodus}
+\subsection{Musik Modus starten und beenden}
+Der Musik Modus dient dazu passende Farben anhand des Audiosignals zu berechnen und auf dem LED-Streifen darzustellen. Jedoch ist es erforderlich, parallel zu der Verarbeitung
+der Audiosignale, weiterhin den Status der Sonos Anlage zu beobachten um einen späteren erneuten Moduswechsel zu ermöglichen. Die Parallelität dieser Abfrage und der 
+Audioverarbeitung wurde durch Multi Threading ermöglicht. Wird in den Musik Modus gewechselt wird ein neuer Thread (im folgenden Musik Thread genannt) gestartet,
+welcher die Ausführung der nötigen Funktionen übernimmt. Der Main Thread prüft im Anschluss lediglich den Zustand der Sonos Anlage in regelmäßigen Intervallen. 
+Wird im Main Thread ein Modus Wechsel erkannt, sendet er über eine Queue an den Musik Modus Thread eine Task welche die Terminierung über einen entsprechenden Handler
+einleitet und die Task aus der Queue wieder entnimmt. Bei der Realisierung dieser Funktion sollt erwähnt werden, dass Python kein Mehrkern Multithreading unterstüzt. Daher
+laufen die Threads nicht echt parallel auf Mehreren Kernen
 
-\begin{lstlisting}[caption={Beschreibung des Listings.}, label=beispiellisting]
-#include <stdio.h>
+\subsection{Audio aufnahme und Farben berechnen}
+Die Verarbeitung des Audiosignals beginnt mit dem starten des Musik Threads, welcher die recordAudio Methode aufruft. Diese 
+Um Audiosignale zu verarbeiten wurde die Klasse Recorder erstellt. Diese Klasse verarbeitet mithilfe der Pyaudio Bibiliothek Signale des Standardeingabegerätes des Raspberrys.
+Hierfür wird im Konstruktor das Objekt Stream erzeugt. Dieses erhält das von Pyaudio erzeugt Stream Objekt. Bei der Erzeugung des Streamobjektes werden verschiedene Parameter 
+für die Aufnahme der Signale festgegelgt. Dazu zählen bspw. die Abtastrate in Hz oder die Anzahl der Aufgenommenen Audiokanäle. Zu erwähnen ist das hier und auch vielen 
+weiteren Stellen der Anwendung auf die Zentrale Konfigurationsdatei (config.py) zugegriffen wird um entscheidende Parameter für die Ausführung festzulegen. Die zentrale 
+Verwaltung der Parameter erleichtert den Anwender und Entwickler Änderungen vorzunhemen und deren Auswirkung in konsistneter Form zu prüfen. \\\\
+Für das Auslesen der Audiosignale hält die Klasse die Funktion recordAudio bereit. Diese liest aus dem Stream von Pyaudio ein die definierte Anzahl an Frames aus gibt diese als
+Bytearray zurück. Die Konvertierung der gemessenen Frequenzen in float Werte übernimmt Numpy. 
 
-int main(void)
-{
-    printf("Hello, world\n");
-}
-\end{lstlisting}
 
-Ein Listing ohne Titel, welches nicht im Listingverzeichnis aufgefühert wird:
 
-\begin{lstlisting}[numbers=none]
-#include <stdio.h>
 
-int main(void)
-{
-    printf("Good bye!\n");
-}
-\end{lstlisting}
-
-Programmcode im Fließtext: \lstinline{int summe(int a, int b)}
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
