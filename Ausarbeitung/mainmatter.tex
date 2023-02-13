@@ -50,13 +50,15 @@ Die Ausführung beginnt in der main Methode innerhalb der gleichnamigen Datei. H
 aufgerufen. Das zentrale Element der Methode ist eine endlose Schleife. Innerhalb dieser Schleife wird in jedem Durchlauf der akutelle Zustand der Sonos Analge erfasst 
 und ausgewertet um zu ermitteln welcher Modus im Moment gewünscht ist. Der Zustand wird in Form einer Variable des Typs TVStateEnum gespeichert. 
 Diese beinhaltet Zustände für die Wiedergabe von Musik und TV-Audio sowie einen Pause Zustand. Diese Zustände werden im weiteren Programmablauf verwendet um festzustellen
-welcher Modus aktuell ausgeführt werden soll. Wie genau der Modus wechsel erfolgt, wird in den folgenden Kapitel beschrieben.
+welcher Modus aktuell ausgeführt wird und ob ein Moduswechsel erforderlich ist. Wie genau der Modus wechsel erfolgt, wird in den folgenden Kapitel beschrieben.
 
 Die Abfrage der Sonos Anlage erfolgt über einen Aufruf der updateCurrentState Funktion. Diese fragt mithilfe der SOCO Bibliothek den Wiedergabestatus und
 das akutell gespielte Lied ab. Durch diese Abfrage kann ermittle welcher Zustand der TVStateEnum zurückgegeben werden muss. 
 Ein Sonderfall ist die Wiedergabe von Audioinhalten eines Fernsehers. Wie bereits in der Einleitung erwähnt implementiert SOCO diesen Fall nicht vollständig.
 Wird ein solches Audiosignal wiedergeben wird keine Information über den akutell wiedergegeben Titel zurückgegeben, jedoch erkannt das Anlage aktuell Ton abspielt. 
-Aus diesem Grund ist die Abfrage für in der zweiten Fallunterscheidung wie in der Abbildung 2.1 zu sehen entsprechend angepasst.
+Aus diesem Grund ist die Abfrage für in der zweiten Fallunterscheidung wie in der Abbildung 2.1 zu sehen entsprechend angepasst. Wurde nach der Status Abfrage
+festgestellt das der akutelles Modus nicht gewechselt werden muss, wird der main Thread einige Sekunden pausiert. Durch diese Vorgehen können Abfragen ohne Mehrwert vermieden werden
+und der Ressourcenverbrauch reduziert werden. 
 
 \begin{figure}[ht]
     \centering
@@ -71,19 +73,31 @@ Der Musik Modus dient dazu passende Farben anhand des Audiosignals zu berechnen 
 der Audiosignale, weiterhin den Status der Sonos Anlage zu beobachten um einen späteren erneuten Moduswechsel zu ermöglichen. Die Parallelität dieser Abfrage und der 
 Audioverarbeitung wurde durch Multi Threading ermöglicht. Wird in den Musik Modus gewechselt wird ein neuer Thread (im folgenden Musik Thread genannt) gestartet,
 welcher die Ausführung der nötigen Funktionen übernimmt. Der Main Thread prüft im Anschluss lediglich den Zustand der Sonos Anlage in regelmäßigen Intervallen. 
-Wird im Main Thread ein Modus Wechsel erkannt, sendet er über eine Queue an den Musik Modus Thread eine Task welche die Terminierung über einen entsprechenden Handler
-einleitet und die Task aus der Queue wieder entnimmt. Bei der Realisierung dieser Funktion sollt erwähnt werden, dass Python kein Mehrkern Multithreading unterstüzt. Daher
-laufen die Threads nicht echt parallel auf Mehreren Kernen
+Wird im Main Thread ein erneuter Modus Wechsel erkannt, sendet er über eine Queue an den Musik Modus Thread eine Task welche die Terminierung über einen entsprechenden Handler
+einleitet und die Task aus der Queue wieder entnimmt. Zu der Realisierung dieser Funktion sollte erwähnt werden, dass Python kein Mehrkern Multithreading unterstüzt. Daher
+laufen die Threads nicht echt parallel auf unterschiedlichen Kernen. Für den gewünschten Zweck ist die vohrandene Implementierung jedoch hinreichend, da der Main Thread die meiste
+Zeit wartend verbringt . Bei einer späteren Weiterentwicklung könnten statt eines zweiten Threads ein separater Prozess erzeugt werden, 
+welcher die Ausführung der Funktion übernimmt. Dies würde eine parallele Ausführung ermöglichen und möglicherweise die Performance der Anwendung steigern.
 
-\subsection{Audio aufnahme und Farben berechnen}
-Die Verarbeitung des Audiosignals beginnt mit dem starten des Musik Threads, welcher die recordAudio Methode aufruft. Diese 
-Um Audiosignale zu verarbeiten wurde die Klasse Recorder erstellt. Diese Klasse verarbeitet mithilfe der Pyaudio Bibiliothek Signale des Standardeingabegerätes des Raspberrys.
-Hierfür wird im Konstruktor das Objekt Stream erzeugt. Dieses erhält das von Pyaudio erzeugt Stream Objekt. Bei der Erzeugung des Streamobjektes werden verschiedene Parameter 
-für die Aufnahme der Signale festgegelgt. Dazu zählen bspw. die Abtastrate in Hz oder die Anzahl der Aufgenommenen Audiokanäle. Zu erwähnen ist das hier und auch vielen 
-weiteren Stellen der Anwendung auf die Zentrale Konfigurationsdatei (config.py) zugegriffen wird um entscheidende Parameter für die Ausführung festzulegen. Die zentrale 
-Verwaltung der Parameter erleichtert den Anwender und Entwickler Änderungen vorzunhemen und deren Auswirkung in konsistneter Form zu prüfen. \\\\
-Für das Auslesen der Audiosignale hält die Klasse die Funktion recordAudio bereit. Diese liest aus dem Stream von Pyaudio ein die definierte Anzahl an Frames aus gibt diese als
-Bytearray zurück. Die Konvertierung der gemessenen Frequenzen in float Werte übernimmt Numpy. 
+\subsection{Audioaufnahme und Farbberechnung}
+Die Aufnahme und Verarbeitung des Audiosignals beginnt mit dem starten des Musik Threads, sobald die Abfrage der Sonos Anlage das entsprechende Ergebnis produziert hat. 
+Für die Aufnahme des Audiosignals wird in der Methode recordAudio zunächst ein Objekt der Klasse Rekorder erstellt, welche mithilfe der Pyaudio Bibiliothek 
+Signale des Standardeingabegerätes des Raspberrys erfässt.
+Im Konstruktor dieser Klasse werden verschiedene Parameter, wie die Abtastrate oder die Anzahl der Aufgenommenen Audiokanäle angegeben um ein geeignetes Stream Objekt
+mit Pyaudio zu erzeugen. Hier und an eingigen weiteren Stellen der Anwendung werden Konfigurationsparameter aus der zentralen Konfigurationsdatei entnommen um dem Anwender 
+und Entwickler Änderungen zu erleichtern und deren Auswirkung in konsistneter Form zu prüfen. \\
+
+Wurde das Recorder Objekt erfolgreich erzeugt kann die zentrale permanente Schleife der Funktion beginnen. Diese nimmt zunächst ein Audiosignal auf, 
+welches im Anschluss für die Berechnung der darzustellenden Farben genutzt wird. Das Auslesen der Signal erfolgt über das erstellte Recorder Objekt,
+welches bei dem Funktionsaufruf eine enstsprechende Anzahl an Frames aufnimmt und als Liste an Float Werten zurückgibt. Diese Liste stellt die Aussschläge 
+des Mikrofons über den Zeitraum der Aufnahme dar. Auf die Berechnung der Farbe soll im folgenden näher eingegangen werden.\\
+
+\textbf{\underline{Farbberechnung}}
+Für die Berechnung der Farben aus den Aussschlägen des Audiosignals wurden Grundlagen und Inhalte des Psynesthesia Repositories verwendet. Verwendete Codeausschnitte aus 
+diesem Repository sind in der Funktion zur Umwandlung Berechnung der Farbwerte zu finden (freqToRGB und wavelen2RGB). Im folgenden soll das Vorgehen bei der Umwandlung näher erläutert
+werden. \\
+Akkustische Signale bestehen bekannter Maßen aus Schallwellen, welche das Gehör eines Menschens in Schwingung versetzen. Diese Schallwellen wurden, wie bereits erwähnt in der A
+
 
 
 
