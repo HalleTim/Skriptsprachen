@@ -23,13 +23,11 @@ def freqToRGB(input):
     #umwandeln des Index in Frequenz
     thefreq = which*config.RATE/config.chunk
 
-    #anpassen der festgestellten Wertes für schönere Farben :=)
+    #anpassen der festgestellten Werte
     while thefreq < 350 and thefreq > 15:
-            thefreq = thefreq*2
-            #print ("the new freq is "+str(thefreq) )
+        thefreq = thefreq*2
     while thefreq > 700:
         thefreq = thefreq/2
-        #print ("the new freq is"+str(thefreq))
     
     #Berechnung zur Umwandlung der Frequenz in sichtbare Farbe
     c = 3*10**8
@@ -46,13 +44,15 @@ def recordAudio():
 
 
     while(True):
+        #audio Aufnehmen
         Rinput=recorder.recordAudio()
+        
+        #fourier Transformation durchführen
         Rinput=abs(np.fft.rfft(Rinput))**2
         color=globals()[config.effect](Rinput)
-#        print(color)
         globals()['ledStrip1'].movingColor(color)
 
-
+        #Handler zum Benden des Musik Threads
         if(not q.empty()):
             status=q.get()
             recorder.stop()
@@ -62,7 +62,7 @@ def recordAudio():
 
 
 
-
+#Abfrage der Sonos Anlage
 def updateCurrentState(SonosAnlage):
     currentTrack=SonosAnlage.get_current_track_info()['title']
     state=SonosAnlage.get_current_transport_info()['current_transport_state']
@@ -75,10 +75,12 @@ def updateCurrentState(SonosAnlage):
         return TVState.pause
     
 
+#Musik Thread beenden
 def endThread():
     q.put(True)
     q.join()
     globals()['recordThread']= threading.Thread(target=recordAudio)
+    
 
 def main():
     globals()['recordThread']= threading.Thread(target=recordAudio)
@@ -86,22 +88,32 @@ def main():
     SonosAnlage = by_name("Wohnzimmer")
     threadState=False
     
+    #Schleife bis Programm beendet
     while(True):
+
+        #Erstellung des Musik Threads und Abfrage der Sonos Anlage
         threadState=globals()['recordThread'].is_alive()
         playState=updateCurrentState(SonosAnlage)
 
+        #Musikmodus starten
         if(playState==TVState.music and not threadState):
             globals()['ledStrip1'].ledTVState=False
             globals()['recordThread'].start()
 
+        #TV Modus starten
         elif(playState==TVState.TV and globals()['ledStrip1'].ledTVState==False):
+            #Musik Modus beenden
             if threadState:
                 endThread()
             globals()['ledStrip1'].fillColor(config.tvColor)
             globals()['ledStrip1'].ledTVState=True
+        
+        #Musik Modus beenden und LED-Streifen ausschalten
         elif(threadState and playState==TVState.pause):
             globals()['ledStrip1'].fillColor((0,0,0))
-            endThread()      
+            endThread() 
+
+        #Main Thread pausieren     
         else:
             time.sleep(5)
 

@@ -10,6 +10,8 @@ class Recorder:
 
     def __init__(self) -> None:
         p = pyaudio.PyAudio()
+
+        #Stream Objekt erzeugen
         self.stream = p.open(format=pyaudio.paInt16,
                     channels=1,
                     rate=config.RATE,
@@ -17,7 +19,7 @@ class Recorder:
                     frames_per_buffer=config.frames_per_buffer)
         self.errorCounter=0
 
-#Aufnahme eines Audio frames
+#Aufnahme der Audio frames
     def recordAudio(self):
         try:
             y = np.fromstring(self.stream.read(config.frames_per_buffer, exception_on_overflow=False), dtype=np.int16)
@@ -33,5 +35,6 @@ class Recorder:
                 exit()
         return y
     
+    #stream beenden
     def stop(self):
         self.stream.close()

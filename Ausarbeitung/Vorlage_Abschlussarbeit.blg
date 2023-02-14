@@ -1,9 +1,9 @@
-[0] Config.pm:311> INFO - This is Biber 2.16
-[0] Config.pm:314> INFO - Logfile is 'Vorlage_Abschlussarbeit.blg'
-[134] biber-MSWIN64:340> INFO - === 
-[178] Biber.pm:415> INFO - Reading 'Vorlage_Abschlussarbeit.bcf'
-[319] Biber.pm:952> INFO - Found 0 citekeys in bib section 0
-[330] Utils.pm:395> WARN - The file 'Vorlage_Abschlussarbeit.bcf' does not contain any citations!
-[342] bbl.pm:654> INFO - Writing 'Vorlage_Abschlussarbeit.bbl' with encoding 'UTF-8'
-[342] bbl.pm:757> INFO - Output to Vorlage_Abschlussarbeit.bbl
-[342] Biber.pm:128> INFO - WARNINGS: 1
+[0] Config.pm:306> INFO - This is Biber 2.18
+[0] Config.pm:309> INFO - Logfile is 'Vorlage_Abschlussarbeit.blg'
+[100] biber-MSWIN64:340> INFO - === 
+[131] Biber.pm:418> INFO - Reading 'Vorlage_Abschlussarbeit.bcf'
+[212] Biber.pm:978> INFO - Found 0 citekeys in bib section 0
+[222] bbl.pm:654> INFO - Writing 'Vorlage_Abschlussarbeit.bbl' with encoding 'UTF-8'
+[222] bbl.pm:757> INFO - Output to Vorlage_Abschlussarbeit.bbl
+[223] Biber.pm:130> WARN - The file 'Vorlage_Abschlussarbeit.bcf' does not contain any citations!
+[223] Biber.pm:132> INFO - WARNINGS: 1
