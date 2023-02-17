@@ -21,9 +21,15 @@ class ledStrip:
     #Berechnete Farben auf 3 LEDs des Streifens darstellen
     def movingColor(self, rgb):
         self.leds=np.roll(self.leds,3,axis=1)
-        self.leds[0]=np.put(self.leds[0],[0,1,2],[rgb[0],rgb[0],rgb[0]])
-        self.leds[1]=np.put(self.leds[1],[0,1,2],[rgb[1],rgb[1],rgb[1]])
-        self.leds[2]=np.put(self.leds[2],[0,1,2],[rgb[2],rgb[2],rgb[2]])
+        r=self.leds[0]
+        g=self.leds[1]
+        b=self.leds[2]
+
+        np.put_along_axis(r,np.array([0]),rgb[0], axis=0)
+        np.put_along_axis(g,np.array([0]),rgb[1], axis=0)
+        np.put_along_axis(b,np.array([0]),rgb[2], axis=0)
+
+        self.leds=np.stack((r,g,b))
         #neue LED-Farben anzeigen
 
         for i in range(self.ledCount):
