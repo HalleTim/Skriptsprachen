@@ -34,7 +34,7 @@ class ledStrip:
 
         for i in range(self.ledCount):
             self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
-        self.strip.write()
+        self.strip.show()
 
     #LED-Streifen in einer Farbe leuchten lassen
     def fillColor(self,rgb):
