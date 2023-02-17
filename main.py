@@ -10,6 +10,7 @@ from soco import SoCo
 from soco.discovery import by_name
 from TVStateEnum import TVState
 import led
+import matplotlib.pyplot as plt
 
 global thefreq
 playState=TVState.music
@@ -23,7 +24,7 @@ def freqToRGB(input):
     #umwandeln des Index in Frequenz
     thefreq = which*config.RATE/config.chunk
 
-    #anpassen der festgestellten Werte
+    #anpassen ermittelten Frequenz
     while thefreq < 350 and thefreq > 15:
         thefreq = thefreq*2
     while thefreq > 700:
@@ -38,7 +39,7 @@ def freqToRGB(input):
 
     return rgb
 
-#Aufnahme des Audios
+#Aufnahme des Audioss
 def recordAudio():
     recorder=microInput.Recorder()
 
