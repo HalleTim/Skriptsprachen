@@ -1,4 +1,4 @@
 import neopixel
-import board
 
-strip=neopixel.NeoPixel(board.D18,20,brightness=1)
+
+strip=neopixel.Adafruit_NeoPixel(18,20,brightness=1)
