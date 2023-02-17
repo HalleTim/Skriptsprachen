@@ -30,8 +30,8 @@ class ledStrip:
         np.put_along_axis(b,np.array([0,1,2]),rgb[2], axis=0)
 
         self.leds=np.stack((r,g,b))
+        
         #neue LED-Farben anzeigen
-
         for i in range(self.ledCount):
             self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
         self.strip.show()
