@@ -22,8 +22,8 @@ class ledStrip:
     def movingColor(self, rgb):
         self.leds=np.roll(self.leds,3,axis=1)
         self.leds[0][0]=rgb[0]
-        self.leds[0][1]=rgb[1]
-        self.leds[0][2]=rgb[2]
+        self.leds[1][0]=rgb[1]
+        self.leds[2][0]=rgb[2]
         print(self.leds)
         #neue LED-Farben anzeigen
 
