@@ -14,14 +14,13 @@ class ledStrip:
         self.pin=config.rpiPin
         self.ledCount=config.ledCount
         self.brightness=config.brightness
-        self.strip=neopixel.NeoPixel(self.pin,self.ledCount,brightness=self.brightness)
+        self.strip=neopixel.Adafruit_NeoPixel(self.pin,self.ledCount,brightness=self.brightness)
         self.leds=np.tile(0,(3,self.ledCount))
         self.ledTVState=False
     
     #Berechnete Farben auf 3 LEDs des Streifens darstellen
     def movingColor(self, rgb):
         self.leds=np.roll(self.leds,3,axis=1)
-        print(self.strip._led_data[1])
         #neue LED-Farben anzeigen
         self.strip.write()
 
