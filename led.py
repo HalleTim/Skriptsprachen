@@ -25,7 +25,7 @@ class ledStrip:
         self.leds[1][0]=rgb[1]
         self.leds[2][0]=rgb[2]
         #neue LED-Farben anzeigen
-        self.strip.show()
+        self.strip.write()
 
     #LED-Streifen in einer Farbe leuchten lassen
     def fillColor(self,rgb):
