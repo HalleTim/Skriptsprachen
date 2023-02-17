@@ -20,12 +20,11 @@ class ledStrip:
     
     #Berechnete Farben auf 3 LEDs des Streifens darstellen
     def movingColor(self, rgb):
-        print(rgb)
         self.leds=np.roll(self.leds,3,axis=1)
         self.leds[0][0]=rgb[0]
         self.leds[0][1]=rgb[1]
         self.leds[0][2]=rgb[2]
-
+        print(self.leds)
         #neue LED-Farben anzeigen
 
         for i in range(self.ledCount):
