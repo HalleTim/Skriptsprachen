@@ -28,7 +28,7 @@ class ledStrip:
         #neue LED-Farben anzeigen
 
         for i in range(self.ledCount):
-            strip[i]=(self.leds[i][0],self.leds[i][1],self.leds[i][2])
+            self.strip[i]=(self.leds[i][0],self.leds[i][1],self.leds[i][2])
         self.strip.write()
 
     #LED-Streifen in einer Farbe leuchten lassen
