@@ -21,9 +21,9 @@ class ledStrip:
     #Berechnete Farben auf 3 LEDs des Streifens darstellen
     def movingColor(self, rgb):
         self.leds=np.roll(self.leds,3,axis=1)
-        print(self.leds)
+        print(self.strip._led_data[1])
         #neue LED-Farben anzeigen
-        self.LEDs.write()
+        self.strip.write()
 
     #LED-Streifen in einer Farbe leuchten lassen
     def fillColor(self,rgb):
