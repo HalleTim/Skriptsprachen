@@ -76,7 +76,7 @@ class ledStrip:
             self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
         self.strip.show()
 
-        np.clip(b,0,0)
+        b=np.clip(b,0,0)
         print( b)
         self.strip.fill((0,0,0))
 
