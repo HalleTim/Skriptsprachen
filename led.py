@@ -44,7 +44,7 @@ class ledStrip:
 
     def Impulse(self,db):
         color=(0,0,200)
-
+        print(db)
         if(db>130):
             db=130
         
@@ -78,7 +78,7 @@ class ledStrip:
             self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
         zeitende=time.time()
 
-        print("Zeit zum schreiben der RGB Werte in Liste:" + str(zeitende-zeitanfang))
+        #print("Zeit zum schreiben der RGB Werte in Liste:" + str(zeitende-zeitanfang))
 
         self.strip.show()
 
