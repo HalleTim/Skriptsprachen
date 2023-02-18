@@ -55,10 +55,10 @@ def AudioDB2Amplitude(input):
     # Berechnen der Leistung des Signals für jedes Frequenzband
     power = np.abs(fft)**2
 
-    # Berechnen des dB-Werts für jedes Frequenzband
-    db = 10 * np.log10(power)
+    # Berechnen des Mitellwerts der dB-Werte für jedes Frequenzband
+    db = np.mean(10 * np.log10(power))
 
-    print(db)
+    
 
 #Aufnahme des Audioss
 def recordAudio():
