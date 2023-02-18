@@ -52,13 +52,25 @@ class ledStrip:
         SumLedsToShine=np.array(int(self.ledCount*percent))
 
         leftLedsToShine=np.arange(self.ledCount//2-SumLedsToShine//2,SumLedsToShine//2)
-        self.leds=np.put(self.leds,leftLedsToShine,[color]*len(leftLedsToShine))
+        rightLedsToShine=np.arange(self.ledCount//2+SumLedsToShine//2,SumLedsToShine)
+
+        r=self.leds[0]
+        g=self.leds[1]
+        b=self.leds[2]
+
+        np.put_along_axis(r,leftLedsToShine,color[0], axis=0)
+        np.put_along_axis(g,leftLedsToShine,color[1], axis=0)
+        np.put_along_axis(b,leftLedsToShine,color[2], axis=0)
         
+        self.leds=np.stack((r,g,b))
         print(self.leds)
-        #rightLedsToShine=np.arange(self.ledCount//2+SumLedsToShine//2,SumLedsToShine)
+        
         #self.leds=np.put(self.leds,rightLedsToShine,[color]*len(rightLedsToShine))
 
+        for i in range(self.ledCount):
+            self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
         self.strip.show()
+
 
         self.strip.fill((0,0,0))
 
