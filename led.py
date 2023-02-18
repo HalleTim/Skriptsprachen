@@ -61,13 +61,12 @@ class ledStrip:
         np.put_along_axis(r,leftLedsToShine,color[0], axis=0)
         np.put_along_axis(g,leftLedsToShine,color[1], axis=0)
         np.put_along_axis(b,leftLedsToShine,color[2], axis=0)
-
         np.put_along_axis(r,rightLedsToShine,color[0], axis=0)
         np.put_along_axis(g,rightLedsToShine,color[1], axis=0)
         np.put_along_axis(b,rightLedsToShine,color[2], axis=0)
         
         self.leds=np.stack((r,g,b))
-        print(SumLedsToShine)
+        print(r)
         
         #self.leds=np.put(self.leds,rightLedsToShine,[color]*len(rightLedsToShine))
 
