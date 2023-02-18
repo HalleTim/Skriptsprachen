@@ -54,6 +54,7 @@ class ledStrip:
         leftLedsToShine=np.arange(self.ledCount//2-SumLedsToShine//2,SumLedsToShine//2)
         self.leds=np.put(self.leds,leftLedsToShine,[color]*len(leftLedsToShine))
         
+        print(self.leds)
         rightLedsToShine=np.arange(self.ledCount//2+SumLedsToShine//2,SumLedsToShine)
         self.leds=np.put(self.leds,rightLedsToShine,[color]*len(rightLedsToShine))
 
