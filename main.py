@@ -21,8 +21,7 @@ global ledStrip1
 
 def freqToRGB(input):
 
-    #fourier Transformation durchführen
-    input=abs(np.fft.rfft(input))**2 
+    
     
     #Frequenz mit größten Anteil finden
     which = input[1:].argmax() + 1
@@ -46,16 +45,7 @@ def freqToRGB(input):
     globals()['ledStrip1'].movingColor(rgb)
 
 def AudioDB2Amplitude(input):
-   # window=signal.hann(config.frames_per_buffer)
-
-    #input = input * window
-    # Anwenden der Fourier-Transformation (DFT)
-   # fft = np.fft.fft(input)
-
-    # Berechnen der Leistung des Signals für jedes Frequenzband
-    #power = np.abs(fft)**2
-
-    input=abs(np.fft.rfft(input))**2 
+   
     # Berechnen des Mitellwerts der dB-Werte für jedes Frequenzband
     db = np.mean(10 * np.log10(input))
 
@@ -71,6 +61,8 @@ def recordAudio():
     while(True):
         #audio Aufnehmen
         Rinput=recorder.recordAudio()
+        #fourier Transformation durchführen
+        Rinput=abs(np.fft.rfft(Rinput))**2 
         globals()[config.effect](Rinput)
 
         #Handler zum Benden des Musik Threads
