@@ -67,7 +67,8 @@ class ledStrip:
         np.put_along_axis(b,rightLedsToShine,color[2], axis=0)
         
         self.leds=np.stack((r,g,b))
-        print( db)
+       
+        
         
         #self.leds=np.put(self.leds,rightLedsToShine,[color]*len(rightLedsToShine))
 
@@ -75,7 +76,8 @@ class ledStrip:
             self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
         self.strip.show()
 
-
+        np.clip(b,0,0)
+        print( sb)
         self.strip.fill((0,0,0))
 
         
