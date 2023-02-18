@@ -66,7 +66,6 @@ def recordAudio():
     while(True):
         #audio Aufnehmen
         Rinput=recorder.recordAudio()
-       
         globals()[config.effect](Rinput)
 
         #Handler zum Benden des Musik Threads
