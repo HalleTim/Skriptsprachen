@@ -10,7 +10,7 @@ from soco import SoCo
 from soco.discovery import by_name
 from TVStateEnum import TVState
 import led
-
+import signal
 
 global thefreq
 playState=TVState.music
@@ -19,8 +19,13 @@ global recordThread
 global ledStrip1
 
 def freqToRGB(input):
+
+    #fourier Transformation durchführen
+    input=abs(np.fft.rfft(input))**2 
+    
     #Frequenz mit größten Anteil finden
     which = input[1:].argmax() + 1
+
     #umwandeln des Index in Frequenz
     thefreq = which*config.RATE/config.chunk
 
@@ -37,12 +42,16 @@ def freqToRGB(input):
     nm = int(pre*10**(-floor(log10(pre)))*100)	
     rgb = wavelen2rgb(nm, MaxIntensity=255)
 
-    return rgb
+    globals()['ledStrip1'].movingColor(rgb)
 
 def AudioDB2Amplitude(input):
+    window=signal.hann(config.chunk)
 
+    input = input * window
+    # Anwenden der diskreten Fourier-Transformation (DFT)
+    fft = np.fft.fft(input)
     # Berechnen der Leistung des Signals für jedes Frequenzband
-    power = np.abs(input)**2
+    power = np.abs(fft)**2
     # Berechnen des dB-Werts für jedes Frequenzband
     db = 10 * np.log10(power)
     # Ausgabe des durchschnittlichen dB-Werts für das gesamte Spektrum
@@ -56,11 +65,8 @@ def recordAudio():
     while(True):
         #audio Aufnehmen
         Rinput=recorder.recordAudio()
-        
-        #fourier Transformation durchführen
-        Rinput=abs(np.fft.rfft(Rinput))**2
-        color=globals()[config.effect](Rinput)
-        globals()['ledStrip1'].movingColor(color)
+       
+        globals()[config.effect](Rinput)
 
         #Handler zum Benden des Musik Threads
         if(not q.empty()):
