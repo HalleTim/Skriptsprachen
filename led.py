@@ -44,7 +44,6 @@ class ledStrip:
 
     def Impulse(self,db):
         color=(0,0,200)
-        print(db)
 
         if(db>130):
             db=130
