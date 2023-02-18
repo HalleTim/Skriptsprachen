@@ -46,17 +46,18 @@ def freqToRGB(input):
     globals()['ledStrip1'].movingColor(rgb)
 
 def AudioDB2Amplitude(input):
-    window=signal.hann(config.frames_per_buffer)
+   # window=signal.hann(config.frames_per_buffer)
 
-    input = input * window
-    # Anwenden der diskreten Fourier-Transformation (DFT)
-    fft = np.fft.fft(input)
+    #input = input * window
+    # Anwenden der Fourier-Transformation (DFT)
+   # fft = np.fft.fft(input)
 
     # Berechnen der Leistung des Signals für jedes Frequenzband
-    power = np.abs(fft)**2
+    #power = np.abs(fft)**2
 
+    input=abs(np.fft.rfft(input))**2 
     # Berechnen des Mitellwerts der dB-Werte für jedes Frequenzband
-    db = np.mean(10 * np.log10(power))
+    db = np.mean(10 * np.log10(input))
 
     globals()['ledStrip1'].Impulse(db)
 

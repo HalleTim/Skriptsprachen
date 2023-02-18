@@ -39,7 +39,7 @@ class ledStrip:
 
     #LED-Streifen in einer Farbe leuchten lassen
     def fillColor(self,rgb):
-        self.LEDs.fill(rgb)
+        self.strip.fill(rgb)
         self.ledTVState=True
 
     def Impulse(self,db):
@@ -80,10 +80,7 @@ class ledStrip:
 
         print("Zeit zum schreiben der RGB Werte in Liste:" + str(zeitende-zeitanfang))
 
-        zeitanfang= time.time()
         self.strip.show()
-        zeitende=time.time()
-        print("Zeit zum schreiben auf den Streifen:" + str(zeitende-zeitanfang))
 
         b=np.clip(b,0,0)
         self.leds=np.stack((r,g,b))
