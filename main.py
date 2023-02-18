@@ -10,7 +10,6 @@ from soco import SoCo
 from soco.discovery import by_name
 from TVStateEnum import TVState
 import led
-from scipy import signal
 
 
 global thefreq
@@ -41,13 +40,9 @@ def freqToRGB(input):
     return rgb
 
 def AudioDB2Amplitude(input):
-    window=signal.hann(config.chunk)
 
-    input = input * window
-    # Anwenden der diskreten Fourier-Transformation (DFT)
-    fft = np.fft.fft(input)
     # Berechnen der Leistung des Signals für jedes Frequenzband
-    power = np.abs(fft)**2
+    power = np.abs(input)**2
     # Berechnen des dB-Werts für jedes Frequenzband
     db = 10 * np.log10(power)
     # Ausgabe des durchschnittlichen dB-Werts für das gesamte Spektrum
