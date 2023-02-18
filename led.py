@@ -47,7 +47,7 @@ class ledStrip:
         if(db>130):
             db=130
         
-        percent = db/100
+        percent = db-30s/100
 
         SumLedsToShine=np.array(int(self.ledCount*percent))
 
