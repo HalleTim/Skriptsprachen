@@ -10,7 +10,8 @@ from soco import SoCo
 from soco.discovery import by_name
 from TVStateEnum import TVState
 import led
-import signal
+from scipy import signal
+
 
 global thefreq
 playState=TVState.music
