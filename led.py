@@ -77,7 +77,7 @@ class ledStrip:
         self.strip.show()
 
         b=np.clip(b,0,0)
-        print( b)
+        self.leds=np.stack((r,g,b))
         self.strip.fill((0,0,0))
 
         
