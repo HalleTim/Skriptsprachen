@@ -58,7 +58,9 @@ def AudioDB2Amplitude(input):
     # Berechnen des Mitellwerts der dB-Werte für jedes Frequenzband
     db = np.mean(10 * np.log10(power))
 
-    
+    globals()['ledStrip1'].Impulse(db)
+
+
 
 #Aufnahme des Audioss
 def recordAudio():

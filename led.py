@@ -40,3 +40,26 @@ class ledStrip:
     def fillColor(self,rgb):
         self.LEDs.fill(rgb)
         self.ledTVState=True
+
+    def Impulse(self,db):
+        color=(0,0,200)
+
+        if(db>130):
+            db=130
+        
+        percent = db/130
+
+        SumLedsToShine=self.ledCount*percent
+
+        leftLedsToShine=np.arange(self.ledCount//2-SumLedsToShine//2,SumLedsToShine//2)
+        self.leds=np.put(self.leds,leftLedsToShine,[color]*len(leftLedsToShine))
+        
+        rightLedsToShine=np.arange(self.ledCount//2+SumLedsToShine//2,SumLedsToShine)
+        self.leds=np.put(self.leds,rightLedsToShine,[color]*len(rightLedsToShine))
+
+        self.strip.show()
+
+        self.strip.fill((0,0,0))
+
+        
+
