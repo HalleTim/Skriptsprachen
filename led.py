@@ -77,7 +77,7 @@ class ledStrip:
         self.strip.show()
 
         np.clip(b,0,0)
-        print( sb)
+        print( b)
         self.strip.fill((0,0,0))
 
         
