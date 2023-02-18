@@ -51,12 +51,14 @@ def AudioDB2Amplitude(input):
     input = input * window
     # Anwenden der diskreten Fourier-Transformation (DFT)
     fft = np.fft.fft(input)
+
     # Berechnen der Leistung des Signals für jedes Frequenzband
     power = np.abs(fft)**2
+
     # Berechnen des dB-Werts für jedes Frequenzband
     db = 10 * np.log10(power)
-    # Ausgabe des durchschnittlichen dB-Werts für das gesamte Spektrum
-    print("dB-Wert:", np.mean(db))
+
+    print(db)
 
 #Aufnahme des Audioss
 def recordAudio():
