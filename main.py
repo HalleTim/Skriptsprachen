@@ -46,7 +46,7 @@ def freqToRGB(input):
     globals()['ledStrip1'].movingColor(rgb)
 
 def AudioDB2Amplitude(input):
-    window=signal.hann(config.chunk)
+    window=signal.hann(config.frames_per_buffer)
 
     input = input * window
     # Anwenden der diskreten Fourier-Transformation (DFT)
