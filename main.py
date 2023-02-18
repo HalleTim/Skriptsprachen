@@ -62,7 +62,7 @@ def recordAudio():
     while(True):
         #audio Aufnehmen
         Rinput=recorder.recordAudio()
-        Rinput=abs(np.fft.rfft(Rinput))**2 
+        Rinput=abs(np.fft.rfft(Rinput))
         globals()[config.effect](Rinput)
 
         #Handler zum Benden des Musik Threads
