@@ -37,21 +37,26 @@ class ledStrip:
             self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
         self.strip.show()
 
-    #LED-Streifen in einer Farbe leuchten lassen
+    #LED-Streifen in einer Farbe leuchten lassen und TV Modus setzen
     def fillColor(self,rgb):
         self.strip.fill(rgb)
         self.ledTVState=True
 
     def Impulse(self,db):
+        #Farbe für Impuls
         color=(0,0,200)
 
-        if(db>130):
-            db=130
+        #Maxiumum festlegen
+        if(db>100):
+            db=100
         
+        #Prozentualen Anteil berechnen
         percent = (db-30)/100
 
+        #Anzahl der zu leuchtenden LEDs
         SumLedsToShine=np.array(int(self.ledCount*percent))
 
+        #Linke und rechte Hälfte auf RGB Liste abbilden
         leftLedsToShine=np.arange(self.ledCount//2-SumLedsToShine//2 ,self.ledCount//2)
         rightLedsToShine=np.arange(self.ledCount//2,self.ledCount//2+SumLedsToShine//2)
 
@@ -59,20 +64,19 @@ class ledStrip:
         g=self.leds[1]
         b=self.leds[2]
 
+        #linke Hälfte schreiben
         np.put_along_axis(r,leftLedsToShine,color[0], axis=0)
         np.put_along_axis(g,leftLedsToShine,color[1], axis=0)
         np.put_along_axis(b,leftLedsToShine,color[2], axis=0)
 
+        #rechte Hälfte schreiben
         np.put_along_axis(r,rightLedsToShine,color[0], axis=0)
         np.put_along_axis(g,rightLedsToShine,color[1], axis=0)
         np.put_along_axis(b,rightLedsToShine,color[2], axis=0)
         
         self.leds=np.stack((r,g,b))
-       
-        
-        
-        #self.leds=np.put(self.leds,rightLedsToShine,[color]*len(rightLedsToShine))
 
+        #RGB-Farbwerte in Liste schreiben
         zeitanfang= time.time()
         for i in range(self.ledCount):
             self.strip[i]=(self.leds[0][i],self.leds[1][i],self.leds[2][i])
@@ -80,6 +84,7 @@ class ledStrip:
         zeitende=time.time()
         print("Zeit zum schreiben der RGB Werte in Liste:" + str(zeitende-zeitanfang))
 
+        #LED-Streifen aktualisieren
         zeitanfang= time.time()
         self.strip.show()
         zeitende=time.time()

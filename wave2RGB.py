@@ -1,3 +1,8 @@
+###################################################################
+#Datei Wave2RGB wurde aus dem Repository Psynesthesia übernommen. # 
+#Link: https://github.com/off-by-some/Psynesthesia                #
+###################################################################
+
 def Adjust_and_Scale(Color, Factor, Highest=100):
         """Gamma adjustment.
         Arguments:

@@ -10,7 +10,6 @@ from soco import SoCo
 from soco.discovery import by_name
 from TVStateEnum import TVState
 import led
-from scipy import signal
 
 
 global thefreq
@@ -19,10 +18,13 @@ q=queue.Queue()
 global recordThread
 global ledStrip1
 
+
+#################################################################
+#Funktion freqToRGB aus dem Repository Psynesthesia übernommen. #
+#Link: https://github.com/off-by-some/Psynesthesia              #
+#################################################################
 def freqToRGB(input):
 
-    
-    
     #Frequenz mit größten Anteil finden
     which = input[1:].argmax() + 1
 
@@ -42,6 +44,7 @@ def freqToRGB(input):
     nm = int(pre*10**(-floor(log10(pre)))*100)	
     rgb = wavelen2rgb(nm, MaxIntensity=255)
 
+    #Abbilden der Farbe auf LED-Streifen
     globals()['ledStrip1'].movingColor(rgb)
 
 def AudioDB2Amplitude(input):
